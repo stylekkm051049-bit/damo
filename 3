@@ -178,3 +178,85 @@ COURSE_MASTER = [
         "target_level": "ม.ปลาย"
     },]    },]
 
+
+
+    #สร้าง Course Object จาก COURSE_MASTER
+courses = {}
+
+for data in COURSE_MASTER:
+  course = Course(data["course_id"], data["course_name"], data["subject"], data["teacher"], data["price"], data["max_seat"],)
+  courses[course.course_id] = course
+
+print("สร้างคอร์สสำเร็จ:", len(courses), "คอร์ส")
+
+df = pd.DataFrame([
+    {
+        "course_id": c.course_id,
+        "course_name": c.course_name,
+        "subject": c.subject,
+        "teacher": c.teacher,
+        "price": c.price,
+        "capacity": c.capacity,
+        "enrolled_count": c.enrolled_count,
+        "available_seats": c.available_seats()
+    }
+    for c in courses.values() ])
+
+df.index = df.index + 1
+
+display(df)
+
+PHONE_PREFIXES = [
+    "081", "082", "083", "084", "085",
+    "086", "087", "088", "089",
+    "091", "092", "093", "094", "095",
+    "096", "097", "098", "099"]
+
+
+def generate_phone():
+    """สุ่มเบอร์โทรศัพท์"""
+    prefix = random.choice(PHONE_PREFIXES)
+    number = random.randint(1000000, 9999999)
+    return f"{prefix}-{number}"
+
+
+def generate_student_name(gender):
+    """สุ่มชื่อและนามสกุลตามเพศ"""
+    return f"{random.choice(FIRST_NAMES[gender])} {random.choice(LAST_NAMES)}"
+
+
+def random_date(start="2026-06-01", end="2026-08-20"):
+    """สุ่มวันที่ลงทะเบียน"""
+    dates = pd.date_range(start, end)
+    return random.choice(list(dates)).strftime("%Y-%m-%d")
+
+
+def format_currency(amount, symbol="บาท"):
+    """จัดรูปแบบจำนวนเงิน"""
+    return f"{amount:,.2f} {symbol}"
+
+def simulate_registration(
+    enrollment_id,
+    student,
+    course,
+    discount_rate=0 ):
+
+    enrollment = Enrollment(
+        enrollment_id,
+        student,
+        course,
+        random_date(),
+        discount_rate )
+
+    enrollment.confirm()
+    return enrollment
+
+
+# ทดสอบ Helper Functions
+
+print("สร้าง Helper Functions สำเร็จ")
+print("\nทดสอบ Function")
+print("ชื่อ:", generate_student_name("หญิง"))
+print("เบอร์โทร:", generate_phone())
+print("วันที่:", random_date())
+print("ราคา:", format_currency(course.price))
